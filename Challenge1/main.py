@@ -1,9 +1,20 @@
 from tkinter import *
+import requests
 
 
 def get_quote():
-    pass
-    #Write your code here.
+    # Make a get() request to the Kanye Rest API.
+    # Raise an exception if the request returned an unsuccessful status code.
+    try:
+        # Parse the JSON to obtain the quote text
+        response = requests.get("https://api.kanye.rest/")
+        response.raise_for_status()
+        data = response.json()
+        quote = data["quote"]
+        # Display the quote in the canvas
+        canvas.itemconfig(quote_text, text=quote)
+    except:
+        raise Exception("Not a valid request")
 
 
 
