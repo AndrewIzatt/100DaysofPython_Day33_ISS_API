@@ -1,33 +1,37 @@
 import requests
-from datetime import datetime as dt
+from datetime import datetime
 
-MY_LAT = 40.346401
-MY_LONG =-111.910072
+MY_LAT = 51.507351 # Your latitude
+MY_LONG = -0.127758 # Your longitude
 
-MY_PARAMS = {
-    "lat": MY_LAT,
-    "lng": MY_LONG,
-    "formatted": 0
-}
-
-current_time = dt.now()
-print(current_time)
-
-response = requests.get("https://api.sunrise-sunset.org/json", params=MY_PARAMS)
+response = requests.get(url="http://api.open-notify.org/iss-now.json")
 response.raise_for_status()
 data = response.json()
-# Sunrise
-sunrise_data = data["results"]["sunrise"]
-sunrise = sunrise_data.split("T")
-sunrise_day = sunrise[0]
-sunrise_time = sunrise[1]
-sunrise_hour = sunrise_time.split(":")[0]
-print(sunrise_hour)
-# Sunset
-sunset_data = data["results"]["sunset"]
-sunset = sunset_data.split("T")
-sunset_day = sunset[0]
-sunset_time = sunset[1]
-sunset_hour = sunset_time.split(":")[0]
-print(sunset_hour)
-# print(sunset)
+
+iss_latitude = float(data["iss_position"]["latitude"])
+iss_longitude = float(data["iss_position"]["longitude"])
+
+#Your position is within +5 or -5 degrees of the ISS position.
+
+
+parameters = {
+    "lat": MY_LAT,
+    "lng": MY_LONG,
+    "formatted": 0,
+}
+
+response = requests.get("https://api.sunrise-sunset.org/json", params=parameters)
+response.raise_for_status()
+data = response.json()
+sunrise = int(data["results"]["sunrise"].split("T")[1].split(":")[0])
+sunset = int(data["results"]["sunset"].split("T")[1].split(":")[0])
+
+time_now = datetime.now()
+
+#If the ISS is close to my current position
+# and it is currently dark
+# Then send me an email to tell me to look up.
+# BONUS: run the code every 60 seconds.
+
+
+
